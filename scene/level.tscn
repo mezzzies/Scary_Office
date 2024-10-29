@@ -1,0 +1,99 @@
+[gd_scene load_steps=7 format=3 uid="uid://dk6y0wglmsdsy"]
+
+[ext_resource type="PackedScene" uid="uid://dklbashrnrqka" path="res://scene/player.tscn" id="1_khdb7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_d43wc"]
+sky_top_color = Color(0.333333, 0.470588, 0.541176, 1)
+sky_horizon_color = Color(0.633333, 0.659897, 0.668544, 1)
+ground_horizon_color = Color(0.633333, 0.659897, 0.668544, 1)
+
+[sub_resource type="Sky" id="Sky_u2vex"]
+sky_material = SubResource("ProceduralSkyMaterial_d43wc")
+
+[sub_resource type="Environment" id="Environment_c1tf0"]
+background_mode = 2
+sky = SubResource("Sky_u2vex")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pqkua"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_vfa6x"]
+
+[node name="level" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_c1tf0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.835344, 0.286002, 0.469472, -0.44416, -0.15207, 0.882948, 0.323917, -0.946085, -2.05213e-08, -1.84871, 26.0899, -3.56431)
+shadow_enabled = true
+
+[node name="floor" type="StaticBody3D" parent="."]
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="main_wall_1" type="StaticBody3D" parent="."]
+transform = Transform3D(17.9664, 0, 0, 0, 7.96148, 0, 0, 0, 0.867239, 0, 4.39, -14.471)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="main_wall_1"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="main_wall_1"]
+transform = Transform3D(1.66243, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="main_wall_2" type="StaticBody3D" parent="."]
+transform = Transform3D(17.9664, 0, 0, 0, 7.96148, 0, 0, 0, 0.867239, 0, 4.39, 14.517)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="main_wall_2"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="main_wall_2"]
+transform = Transform3D(1.66243, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="main_wall_3" type="StaticBody3D" parent="."]
+transform = Transform3D(1.11607, 0, 0, 0, 7.96148, 0, 0, 0, 28.2113, 14.4344, 4.39, 0.0448236)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="main_wall_3"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="main_wall_3"]
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="main_wall_4" type="StaticBody3D" parent="."]
+transform = Transform3D(1.11607, 0, 0, 0, 7.96148, 0, 0, 0, 28.2113, -14.3926, 4.39, 0.0448236)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="main_wall_4"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="main_wall_4"]
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="wall_1" type="StaticBody3D" parent="."]
+transform = Transform3D(1.11607, 0, 0, 0, 7.96148, 0, 0, 0, 16.6406, -5.81119, 4.39, 6.02587)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="wall_1"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="wall_1"]
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="wall_2" type="StaticBody3D" parent="."]
+transform = Transform3D(9.18624, 0, 0, 0, 7.96148, 0, 0, 0, 0.867239, 7.25471, 4.39, -1.90637)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="wall_2"]
+shape = SubResource("BoxShape3D_pqkua")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="wall_2"]
+transform = Transform3D(1.66243, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_vfa6x")
+
+[node name="player" parent="." instance=ExtResource("1_khdb7")]
+transform = Transform3D(-0.00931995, 0, 0.999957, 0, 1, 0, -0.999957, 0, -0.00931995, 9.634, 0.827233, 6.18511)

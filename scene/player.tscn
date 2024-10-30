@@ -1,24 +1,140 @@
-[gd_scene load_steps=5 format=3 uid="uid://dklbashrnrqka"]
+[gd_scene load_steps=33 format=3 uid="uid://dklbashrnrqka"]
 
 [ext_resource type="Script" path="res://script/player.gd" id="1_itioc"]
 [ext_resource type="Script" path="res://script/camera.gd" id="2_8rdgy"]
+[ext_resource type="Script" path="res://script/flashlight.gd" id="3_b5e14"]
+[ext_resource type="PackedScene" uid="uid://bnm01gamf0dld" path="res://assets/Models/male_casual/male_casual.fbx" id="3_d6hyt"]
+[ext_resource type="Animation" uid="uid://biicdrpa126rj" path="res://animations/walking.anim" id="5_j855i"]
+[ext_resource type="Animation" uid="uid://ce8u27hlcosdl" path="res://animations/crouched_walk.anim" id="6_5lbj2"]
+[ext_resource type="Animation" uid="uid://c7lqwqvyxr1dn" path="res://animations/crouch.anim" id="7_2rou3"]
+[ext_resource type="Animation" uid="uid://c1tawfbcglp8n" path="res://animations/idle.anim" id="7_48681"]
+[ext_resource type="Animation" uid="uid://bnhtwsb1hvqlh" path="res://animations/sit.anim" id="8_qldhy"]
+[ext_resource type="Animation" uid="uid://cfecbsvxl1jr4" path="res://animations/walk_back.anim" id="10_7khai"]
+[ext_resource type="Animation" uid="uid://e3unlsb11an4" path="res://animations/walk_left.anim" id="11_cpdwd"]
+[ext_resource type="Animation" uid="uid://vn2q5shk38vg" path="res://animations/walk_right.anim" id="12_ubn42"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vge7k"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ecf1f"]
+animation = &"walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_s7wv2"]
+animation = &"walk_back"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1wsyb"]
+animation = &"walk_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jvcgk"]
+animation = &"walk_left"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_epbkw"]
+auto_triangles = false
+blend_point_0/node = SubResource("AnimationNodeAnimation_vge7k")
+blend_point_0/pos = Vector2(0, 0)
+blend_point_1/node = SubResource("AnimationNodeAnimation_ecf1f")
+blend_point_1/pos = Vector2(0, 1)
+blend_point_2/node = SubResource("AnimationNodeAnimation_s7wv2")
+blend_point_2/pos = Vector2(0, -1)
+blend_point_3/node = SubResource("AnimationNodeAnimation_1wsyb")
+blend_point_3/pos = Vector2(1, 0)
+blend_point_4/node = SubResource("AnimationNodeAnimation_jvcgk")
+blend_point_4/pos = Vector2(-1, 0)
+triangles = PackedInt32Array(0, 1, 3, 0, 2, 3, 0, 1, 4, 0, 2, 4)
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cdobo"]
+animation = &"crouch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pyr0l"]
+animation = &"crouched_walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0tww3"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w7x45"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_aao0a"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wjryx"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_35p13"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7gmxj"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bnaty"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_nm3yl"]
+states/End/position = Vector2(700, 172)
+states/MAIN/node = SubResource("AnimationNodeBlendSpace2D_epbkw")
+states/MAIN/position = Vector2(462, 172)
+states/Start/position = Vector2(228, 172)
+states/crouch/node = SubResource("AnimationNodeAnimation_cdobo")
+states/crouch/position = Vector2(462, 54)
+states/crouched_walk/node = SubResource("AnimationNodeAnimation_pyr0l")
+states/crouched_walk/position = Vector2(628, 54)
+transitions = ["Start", "MAIN", SubResource("AnimationNodeStateMachineTransition_0tww3"), "MAIN", "crouch", SubResource("AnimationNodeStateMachineTransition_w7x45"), "crouch", "crouched_walk", SubResource("AnimationNodeStateMachineTransition_aao0a"), "crouched_walk", "MAIN", SubResource("AnimationNodeStateMachineTransition_wjryx"), "crouch", "MAIN", SubResource("AnimationNodeStateMachineTransition_35p13"), "crouched_walk", "crouch", SubResource("AnimationNodeStateMachineTransition_7gmxj"), "MAIN", "crouched_walk", SubResource("AnimationNodeStateMachineTransition_bnaty")]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_a66lq"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2f0pu"]
+_data = {
+"crouch": ExtResource("7_2rou3"),
+"crouched_walk": ExtResource("6_5lbj2"),
+"idle": ExtResource("7_48681"),
+"sit": ExtResource("8_qldhy"),
+"walk": ExtResource("5_j855i"),
+"walk_back": ExtResource("10_7khai"),
+"walk_left": ExtResource("11_cpdwd"),
+"walk_right": ExtResource("12_ubn42")
+}
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5romd"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cxxsu"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_8lys0"]
-radial_segments = 15
+height = 1.81757
 
 [node name="player" type="CharacterBody3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 script = ExtResource("1_itioc")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_cxxsu")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("CapsuleMesh_8lys0")
-
 [node name="Head" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.494602, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40845, 0)
 script = ExtResource("2_8rdgy")
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.187551, -0.25566)
+
+[node name="flashlight" type="SpotLight3D" parent="Head"]
+transform = Transform3D(0.496342, -0.0340903, 0.0498224, 0.0326501, 0.498678, 0.0159453, -0.0507778, -0.0125753, 0.497256, 0.397058, -0.330807, -0.737253)
+light_energy = 4.0
+light_indirect_energy = 4.0
+light_volumetric_fog_energy = 2.0
+spot_range = 10.0
+spot_angle = 30.0
+script = ExtResource("3_b5e14")
+
+[node name="male_casual" parent="." instance=ExtResource("3_d6hyt")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="AnimationTree" type="AnimationTree" parent="male_casual"]
+tree_root = SubResource("AnimationNodeStateMachine_nm3yl")
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource("AnimationNodeStateMachinePlayback_a66lq")
+parameters/MAIN/blend_position = Vector2(0, -0.0196079)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="male_casual"]
+reset_on_save = false
+libraries = {
+"": SubResource("AnimationLibrary_2f0pu")
+}
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.804, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_5romd")
+skeleton = NodePath("../male_casual")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.804329, 0)
+shape = SubResource("CapsuleShape3D_cxxsu")

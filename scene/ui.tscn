@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://cctfcy2bwdnkh"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_w22qa"]
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="stamina_gauge" type="HSlider" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 351.0
+offset_top = 571.0
+offset_right = 836.0
+offset_bottom = 609.0
+theme_override_icons/grabber = SubResource("ImageTexture_w22qa")
+step = 0.0
+value = 100.0

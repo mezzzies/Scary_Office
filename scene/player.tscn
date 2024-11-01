@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://dklbashrnrqka"]
+[gd_scene load_steps=25 format=3 uid="uid://dklbashrnrqka"]
 
 [ext_resource type="Script" path="res://script/player.gd" id="1_itioc"]
 [ext_resource type="Script" path="res://script/camera.gd" id="2_8rdgy"]
@@ -41,38 +41,17 @@ blend_point_3/pos = Vector2(1, 0)
 blend_point_4/node = SubResource("AnimationNodeAnimation_jvcgk")
 blend_point_4/pos = Vector2(-1, 0)
 triangles = PackedInt32Array(0, 1, 3, 0, 2, 3, 0, 1, 4, 0, 2, 4)
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cdobo"]
-animation = &"crouch"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pyr0l"]
-animation = &"crouched_walk"
+sync = true
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0tww3"]
 advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w7x45"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_aao0a"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wjryx"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_35p13"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7gmxj"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bnaty"]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_nm3yl"]
 states/End/position = Vector2(700, 172)
 states/MAIN/node = SubResource("AnimationNodeBlendSpace2D_epbkw")
 states/MAIN/position = Vector2(462, 172)
 states/Start/position = Vector2(228, 172)
-states/crouch/node = SubResource("AnimationNodeAnimation_cdobo")
-states/crouch/position = Vector2(462, 54)
-states/crouched_walk/node = SubResource("AnimationNodeAnimation_pyr0l")
-states/crouched_walk/position = Vector2(628, 54)
-transitions = ["Start", "MAIN", SubResource("AnimationNodeStateMachineTransition_0tww3"), "MAIN", "crouch", SubResource("AnimationNodeStateMachineTransition_w7x45"), "crouch", "crouched_walk", SubResource("AnimationNodeStateMachineTransition_aao0a"), "crouched_walk", "MAIN", SubResource("AnimationNodeStateMachineTransition_wjryx"), "crouch", "MAIN", SubResource("AnimationNodeStateMachineTransition_35p13"), "crouched_walk", "crouch", SubResource("AnimationNodeStateMachineTransition_7gmxj"), "MAIN", "crouched_walk", SubResource("AnimationNodeStateMachineTransition_bnaty")]
+transitions = ["Start", "MAIN", SubResource("AnimationNodeStateMachineTransition_0tww3")]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_a66lq"]
 
@@ -105,10 +84,10 @@ script = ExtResource("2_8rdgy")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.187551, -0.25566)
 
 [node name="flashlight" type="SpotLight3D" parent="Head"]
-transform = Transform3D(0.496342, -0.0340903, 0.0498224, 0.0326501, 0.498678, 0.0159453, -0.0507778, -0.0125753, 0.497256, 0.397058, -0.330807, -0.737253)
-light_energy = 4.0
-light_indirect_energy = 4.0
-light_volumetric_fog_energy = 2.0
+transform = Transform3D(0.496342, -0.0340903, 0.0498224, 0.0326501, 0.498678, 0.0159454, -0.0507778, -0.0125753, 0.497256, 0.153989, 0.0749239, -0.13056)
+light_energy = 6.0
+light_indirect_energy = 3.0
+light_volumetric_fog_energy = 3.0
 spot_range = 10.0
 spot_angle = 30.0
 script = ExtResource("3_b5e14")
@@ -121,7 +100,7 @@ tree_root = SubResource("AnimationNodeStateMachine_nm3yl")
 anim_player = NodePath("../AnimationPlayer")
 active = true
 parameters/playback = SubResource("AnimationNodeStateMachinePlayback_a66lq")
-parameters/MAIN/blend_position = Vector2(0, -0.0196079)
+parameters/MAIN/blend_position = Vector2(0.00190842, -0.0131004)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="male_casual"]
 reset_on_save = false
@@ -136,5 +115,5 @@ mesh = SubResource("CapsuleMesh_5romd")
 skeleton = NodePath("../male_casual")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.804329, 0)
+transform = Transform3D(0.694411, 0, 0, 0, 0.951788, 0, 0, 0, 1, 0, 0.84435, 0)
 shape = SubResource("CapsuleShape3D_cxxsu")

@@ -16,6 +16,13 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 func _ready():
 	speed = WALK_SPEED
 	stamina_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
+	$male_casual/AnimationTree.set("parameters/MAIN/blend_position",Vector2(0,0))
+	
+	# Create and assign a PhysicsMaterial to reduce friction
+#	var material = PhysicsMaterial.new()
+#	material.friction = 0.1  # Lower friction to prevent sticking
+#	material.bounce = 0.0    # Optional: Set bounce if needed
+#	$CollisionShape3D.material_override = material
 
 func _process(delta):
 	# Stamina Show
@@ -67,6 +74,20 @@ func _physics_process(delta):
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
 		velocity.z = move_toward(velocity.z, 0, speed)
-
+		
+	# Smoothly transition the animation blend position
+	var current_blend = $male_casual/AnimationTree.get("parameters/MAIN/blend_position")
+	var input_dir_x = input_dir.x
+	var input_dir_y = -input_dir.y
+	if speed == WALK_SPEED:
+		input_dir_y = input_dir_y * 0.66
+	else:
+		input_dir_y = input_dir_y
+	
+	var target_blend = Vector2(input_dir_x, input_dir_y)
+	var new_blend = current_blend.lerp(target_blend, 5.0 * delta)
+	$male_casual/AnimationTree.set("parameters/MAIN/blend_position", new_blend)
+	
 	move_and_slide()
+	get_last_slide_collision()
 	

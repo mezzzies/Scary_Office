@@ -1,8 +1,8 @@
-[gd_scene load_steps=25 format=3 uid="uid://dklbashrnrqka"]
+[gd_scene load_steps=23 format=3 uid="uid://dklbashrnrqka"]
 
 [ext_resource type="Script" path="res://script/player.gd" id="1_itioc"]
 [ext_resource type="Script" path="res://script/camera.gd" id="2_8rdgy"]
-[ext_resource type="Script" path="res://script/flashlight.gd" id="3_b5e14"]
+[ext_resource type="PackedScene" uid="uid://dmi067g8c7jry" path="res://scene/interactions.tscn" id="3_2wgjv"]
 [ext_resource type="PackedScene" uid="uid://bnm01gamf0dld" path="res://assets/Models/male_casual/male_casual.fbx" id="3_d6hyt"]
 [ext_resource type="Animation" uid="uid://biicdrpa126rj" path="res://animations/walking.anim" id="5_j855i"]
 [ext_resource type="Animation" uid="uid://ce8u27hlcosdl" path="res://animations/crouched_walk.anim" id="6_5lbj2"]
@@ -53,8 +53,6 @@ states/MAIN/position = Vector2(462, 172)
 states/Start/position = Vector2(228, 172)
 transitions = ["Start", "MAIN", SubResource("AnimationNodeStateMachineTransition_0tww3")]
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_a66lq"]
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2f0pu"]
 _data = {
 "crouch": ExtResource("7_2rou3"),
@@ -67,9 +65,8 @@ _data = {
 "walk_right": ExtResource("12_ubn42")
 }
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_5romd"]
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cxxsu"]
+radius = 0.341074
 height = 1.81757
 
 [node name="player" type="CharacterBody3D"]
@@ -80,17 +77,21 @@ script = ExtResource("1_itioc")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40845, 0)
 script = ExtResource("2_8rdgy")
 
+[node name="Interactions" parent="Head" instance=ExtResource("3_2wgjv")]
+
 [node name="Camera3D" type="Camera3D" parent="Head"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.187551, -0.25566)
 
 [node name="flashlight" type="SpotLight3D" parent="Head"]
-transform = Transform3D(0.496342, -0.0340903, 0.0498224, 0.0326501, 0.498678, 0.0159454, -0.0507778, -0.0125753, 0.497256, 0.153989, 0.0749239, -0.13056)
-light_energy = 6.0
-light_indirect_energy = 3.0
-light_volumetric_fog_energy = 3.0
+transform = Transform3D(0.496342, -0.0340903, 0.0498224, 0.0326501, 0.498678, 0.0159454, -0.0507778, -0.0125753, 0.497256, 0.153989, 0.0749239, -0.248651)
+light_color = Color(0.939671, 0.946439, 0.765455, 1)
+light_energy = 8.0
+light_indirect_energy = 5.0
+light_volumetric_fog_energy = 4.0
+shadow_enabled = true
+distance_fade_enabled = true
 spot_range = 10.0
 spot_angle = 30.0
-script = ExtResource("3_b5e14")
 
 [node name="male_casual" parent="." instance=ExtResource("3_d6hyt")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
@@ -98,8 +99,6 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 [node name="AnimationTree" type="AnimationTree" parent="male_casual"]
 tree_root = SubResource("AnimationNodeStateMachine_nm3yl")
 anim_player = NodePath("../AnimationPlayer")
-active = true
-parameters/playback = SubResource("AnimationNodeStateMachinePlayback_a66lq")
 parameters/MAIN/blend_position = Vector2(0.00190842, -0.0131004)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="male_casual"]
@@ -108,12 +107,6 @@ libraries = {
 "": SubResource("AnimationLibrary_2f0pu")
 }
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.804, 0)
-visible = false
-mesh = SubResource("CapsuleMesh_5romd")
-skeleton = NodePath("../male_casual")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.694411, 0, 0, 0, 0.951788, 0, 0, 0, 1, 0, 0.84435, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84435, 0)
 shape = SubResource("CapsuleShape3D_cxxsu")

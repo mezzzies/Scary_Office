@@ -42,6 +42,12 @@ func _process(delta):
 		speed = WALK_SPEED
 	else:
 		pass
+		
+	if Input.is_action_just_pressed("flashlight"):
+		if $Head/flashlight.visible == false:
+			$Head/flashlight.visible = true
+		else:
+			$Head/flashlight.visible = false
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -90,4 +96,3 @@ func _physics_process(delta):
 	
 	move_and_slide()
 	get_last_slide_collision()
-	

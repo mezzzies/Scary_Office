@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cctfcy2bwdnkh"]
+[gd_scene load_steps=3 format=3 uid="uid://cctfcy2bwdnkh"]
+
+[ext_resource type="Texture2D" uid="uid://2aefex8nj45u" path="res://materials/aim.png" id="1_h5rh5"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_w22qa"]
 
@@ -9,6 +11,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="crosshair" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 536.0
+offset_top = 304.0
+offset_right = 576.0
+offset_bottom = 344.0
+pivot_offset = Vector2(20, 20)
+texture = ExtResource("1_h5rh5")
+expand_mode = 1
 
 [node name="stamina_gauge" type="HSlider" parent="."]
 visible = false

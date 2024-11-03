@@ -50,8 +50,8 @@ func _input(event: InputEvent) -> void:
 			$".".rotate_y(-event.relative.x * 0.005)
 			$Head.rotate_x(-event.relative.y * 0.005)
 			$Head.rotation.x = clamp($Head.rotation.x, deg_to_rad(-70),deg_to_rad(90))
-			$".".rotation.y = clamp($".".rotation.y, deg_to_rad(interacted_obj_rotation_deg.y - 30) \
-			,deg_to_rad(interacted_obj_rotation_deg.y + 30))
+			$".".rotation.y = clamp($".".rotation.y, deg_to_rad(interacted_obj_rotation_deg.y - 50) \
+			,deg_to_rad(interacted_obj_rotation_deg.y + 50))
 			pass
 		else:
 			$".".rotate_y(-event.relative.x * 0.005)

@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://ccmmhd1x34ffs"
+path="res://.godot/imported/10109_Cordless Phone_v2_Iteration2.obj-fb55051281c9f7e4e1138278054c3324.mesh"
+
+[deps]
+
+files=["res://.godot/imported/10109_Cordless Phone_v2_Iteration2.obj-fb55051281c9f7e4e1138278054c3324.mesh"]
+
+source_file="res://assets/Models/Phone/10109_Cordless Phone_v2_Iteration2.obj"
+dest_files=["res://.godot/imported/10109_Cordless Phone_v2_Iteration2.obj-fb55051281c9f7e4e1138278054c3324.mesh", "res://.godot/imported/10109_Cordless Phone_v2_Iteration2.obj-fb55051281c9f7e4e1138278054c3324.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

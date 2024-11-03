@@ -1,7 +1,6 @@
-[gd_scene load_steps=23 format=3 uid="uid://dklbashrnrqka"]
+[gd_scene load_steps=22 format=3 uid="uid://dklbashrnrqka"]
 
 [ext_resource type="Script" path="res://script/player.gd" id="1_itioc"]
-[ext_resource type="Script" path="res://script/camera.gd" id="2_8rdgy"]
 [ext_resource type="PackedScene" uid="uid://dmi067g8c7jry" path="res://scene/interactions.tscn" id="3_2wgjv"]
 [ext_resource type="PackedScene" uid="uid://bnm01gamf0dld" path="res://assets/Models/male_casual/male_casual.fbx" id="3_d6hyt"]
 [ext_resource type="Animation" uid="uid://biicdrpa126rj" path="res://animations/walking.anim" id="5_j855i"]
@@ -67,31 +66,31 @@ _data = {
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cxxsu"]
 radius = 0.341074
-height = 1.81757
+height = 1.73407
 
 [node name="player" type="CharacterBody3D"]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+collision_layer = 15
+collision_mask = 15
 script = ExtResource("1_itioc")
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40845, 0)
-script = ExtResource("2_8rdgy")
 
 [node name="Interactions" parent="Head" instance=ExtResource("3_2wgjv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.182473, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.187551, -0.25566)
 
 [node name="flashlight" type="SpotLight3D" parent="Head"]
 transform = Transform3D(0.496342, -0.0340903, 0.0498224, 0.0326501, 0.498678, 0.0159454, -0.0507778, -0.0125753, 0.497256, 0.153989, 0.0749239, -0.248651)
+visible = false
 light_color = Color(0.939671, 0.946439, 0.765455, 1)
-light_energy = 8.0
-light_indirect_energy = 5.0
-light_volumetric_fog_energy = 4.0
 shadow_enabled = true
-distance_fade_enabled = true
-spot_range = 10.0
-spot_angle = 30.0
+spot_range = 15.0
+spot_angle = 37.1
+spot_angle_attenuation = 0.784586
 
 [node name="male_casual" parent="." instance=ExtResource("3_d6hyt")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
@@ -108,5 +107,8 @@ libraries = {
 }
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84435, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87352, 0)
 shape = SubResource("CapsuleShape3D_cxxsu")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+volume_db = -15.0

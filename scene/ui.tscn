@@ -50,6 +50,7 @@ value = 100.0
 
 [node name="pause_menu" type="VBoxContainer" parent="."]
 visible = false
+layout_mode = 0
 offset_left = 37.0
 offset_top = 28.0
 offset_right = 107.0

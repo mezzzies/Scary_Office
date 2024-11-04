@@ -11,7 +11,8 @@ enum PLAYER_STATE {
 	IDLE,
 	SITTING,
 	WALKING,
-	SPRINTING
+	SPRINTING,
+	HIDING
 }
 
 @onready var footstep_audio : AudioStreamPlayer3D = get_node(NodePath("AudioStreamPlayer3D"))
@@ -20,7 +21,9 @@ var speed
 var stamina_gauge
 var moving_flag: bool = false
 var walking_sound_flag: bool = false
-var player_state
+var cur_player_state
+var pre_player_state
+
 var last_player_position: Vector3
 var interacted_obj_rotation_deg: Vector3
 
@@ -32,11 +35,10 @@ func _ready():
 	GlobalVar.pause_status = false
 	speed = WALK_SPEED
 	stamina_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
-	print("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
-	print(stamina_gauge)
 	$male_casual/AnimationTree.set("parameters/MAIN/blend_position",Vector2(0,0))
 	last_player_position = global_position
-	player_state = PLAYER_STATE.IDLE
+	cur_player_state = PLAYER_STATE.IDLE
+	pre_player_state = PLAYER_STATE.IDLE
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	# Create and assign a PhysicsMaterial to reduce friction
@@ -45,22 +47,25 @@ func _ready():
 #	material.bounce = 0.0    # Optional: Set bounce if needed
 #	$CollisionShape3D.material_override = material
 
-#	Camera Control
+# Camera Control
 func _input(event: InputEvent) -> void:
 	var min_deg
 	var max_deg
 	if event is InputEventMouseMotion and !GlobalVar.pause_status:
-		if player_state == PLAYER_STATE.SITTING:
-			$".".rotate_y(-event.relative.x * 0.005)
-			$Head.rotate_x(-event.relative.y * 0.005)
-			$Head.rotation.x = clamp($Head.rotation.x, deg_to_rad(-70),deg_to_rad(90))
-			$".".rotation.y = clamp($".".rotation.y, deg_to_rad(interacted_obj_rotation_deg.y - 50) \
-			,deg_to_rad(interacted_obj_rotation_deg.y + 50))
-			pass
-		else:
-			$".".rotate_y(-event.relative.x * 0.005)
-			$Head.rotate_x(-event.relative.y * 0.005)
-			$Head.rotation.x = clamp($Head.rotation.x, deg_to_rad(-90),deg_to_rad(90))
+		match cur_player_state:
+			PLAYER_STATE.SITTING:
+				$".".rotate_y(-event.relative.x * 0.005)
+				$Head.rotate_x(-event.relative.y * 0.005)
+				$Head.rotation.x = clamp($Head.rotation.x, deg_to_rad(-70),deg_to_rad(90))
+				$".".rotation.y = clamp($".".rotation.y, deg_to_rad(interacted_obj_rotation_deg.y - 50) \
+				,deg_to_rad(interacted_obj_rotation_deg.y + 50))
+				
+			PLAYER_STATE.HIDING:
+				pass
+			_:
+				$".".rotate_y(-event.relative.x * 0.005)
+				$Head.rotate_x(-event.relative.y * 0.005)
+				$Head.rotation.x = clamp($Head.rotation.x, deg_to_rad(-90),deg_to_rad(90))
 	else:
 		pass
 	
@@ -94,7 +99,7 @@ func _process(delta):
 			$Head/flashlight.visible = true
 		else:
 			$Head/flashlight.visible = false
-		
+	
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -126,14 +131,13 @@ func _physics_process(delta):
 		else:
 			pass
 		moving_flag = true
-		player_state = PLAYER_STATE.WALKING
 	else:
-		moving_flag = false
 		velocity.x = move_toward(velocity.x, 0, speed)
 		velocity.z = move_toward(velocity.z, 0, speed)
-		
-	if $male_casual/AnimationPlayer.is_playing() and \
-	player_state == PLAYER_STATE.WALKING:
+		moving_flag = false
+	
+	if pre_player_state == PLAYER_STATE.SITTING or \
+	pre_player_state == PLAYER_STATE.HIDING:
 		$male_casual/AnimationPlayer.stop()
 		global_position = last_player_position
 		
@@ -143,13 +147,17 @@ func _physics_process(delta):
 	var input_dir_y = -input_dir.y
 	if speed == WALK_SPEED and moving_flag == true:
 		input_dir_y = input_dir_y * 0.66
-		player_state = PLAYER_STATE.WALKING
+		pre_player_state = cur_player_state
+		cur_player_state = PLAYER_STATE.WALKING
 	elif speed == SPRINT_SPEED and moving_flag == true:
 		input_dir_y = input_dir_y
-		player_state = PLAYER_STATE.SPRINTING
+		pre_player_state = cur_player_state
+		cur_player_state = PLAYER_STATE.SPRINTING
 	elif moving_flag == false and \
-	$male_casual/AnimationPlayer.current_animation != "sit":
-		player_state = PLAYER_STATE.IDLE
+	$male_casual/AnimationPlayer.current_animation != "sit" and \
+	cur_player_state != PLAYER_STATE.HIDING:
+		pre_player_state = cur_player_state
+		cur_player_state = PLAYER_STATE.IDLE
 	else:
 		pass
 	
@@ -157,7 +165,8 @@ func _physics_process(delta):
 	var new_blend = current_blend.lerp(target_blend, 5.0 * delta)
 	$male_casual/AnimationTree.set("parameters/MAIN/blend_position", new_blend)
 	
-	set_collision_player(player_state)
+	if pre_player_state != cur_player_state:
+		set_collision_player(cur_player_state)
 	move_and_slide()
 	get_last_slide_collision()
 
@@ -166,33 +175,47 @@ func _play_footstep_audio():
 	
 	if  moving_flag == true:
 		if speed == WALK_SPEED:
-			footstep_audio.stream = load("res://sounds/footsteps_3.mp3")
-			sec = 3.3
+			footstep_audio.stream = load("res://sounds/footsteps_2.mp3")
 		elif speed == SPRINT_SPEED:
-			footstep_audio.stream = load("res://sounds/footsteps_3_running.mp3")
-			sec = 1.4
-		footstep_audio.play(sec)
+			footstep_audio.stream = load("res://sounds/footsteps_2_running.mp3")
+		footstep_audio.play()
 	else:
 		footstep_audio.stop()
-
-func _on_chair_interacted(body: Variant) -> void:
-	var chair_node = get_node(GlobalVar.interactive_node_path)
-	var Chair_position = chair_node.global_position
-	interacted_obj_rotation_deg = chair_node.global_rotation_degrees
-	
-	if player_state != PLAYER_STATE.SITTING:
-		last_player_position = global_position
-		$male_casual/AnimationPlayer.play("sit")
-		player_state = PLAYER_STATE.SITTING
-		global_position.x = Chair_position.x
-		global_position.y = Chair_position.y - 1
-		global_position.z = Chair_position.z
-		global_rotation_degrees = interacted_obj_rotation_deg
 
 func set_collision_player(state: int):
 	match state:
 		PLAYER_STATE.IDLE, PLAYER_STATE.WALKING, PLAYER_STATE.SPRINTING:
 			for i in range(1,5):
 				$".".set_collision_mask_value(i,true)
-		PLAYER_STATE.SITTING:
+		PLAYER_STATE.SITTING, PLAYER_STATE.HIDING:
 			$".".set_collision_mask_value(1,false)
+			
+
+func _on_chair_interacted(body: Variant) -> void:
+	var chair_node = get_node(GlobalVar.interactive_node_path)
+	var chair_position = chair_node.global_position
+	interacted_obj_rotation_deg = chair_node.global_rotation_degrees
+	
+	if cur_player_state != PLAYER_STATE.SITTING:
+		last_player_position = global_position
+		$male_casual/AnimationPlayer.play("sit")
+		pre_player_state = cur_player_state
+		cur_player_state = PLAYER_STATE.SITTING
+		global_position.x = chair_position.x
+		global_position.y = chair_position.y - 1
+		global_position.z = chair_position.z
+		global_rotation_degrees = interacted_obj_rotation_deg
+
+func _on_locker_interacted(body: Variant) -> void:
+	var locker_node = get_node(GlobalVar.interactive_node_path)
+	var locker_position = locker_node.global_position
+	interacted_obj_rotation_deg = locker_node.global_rotation_degrees
+	
+	if cur_player_state != PLAYER_STATE.HIDING:
+		last_player_position = global_position
+		pre_player_state = cur_player_state
+		cur_player_state = PLAYER_STATE.HIDING
+		global_position.x = locker_position.x
+		global_position.z = locker_position.z
+		global_rotation_degrees = interacted_obj_rotation_deg
+		$Head.rotation.x = 0

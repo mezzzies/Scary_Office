@@ -1,4 +1,4 @@
-[gd_scene load_steps=200 format=4 uid="uid://bfobpbpbi5j3m"]
+[gd_scene load_steps=202 format=4 uid="uid://bfobpbpbi5j3m"]
 
 [ext_resource type="Script" path="res://script/office.gd" id="1_2stet"]
 [ext_resource type="PackedScene" uid="uid://dklbashrnrqka" path="res://scene/player.tscn" id="2_mwj6y"]
@@ -12,6 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://4lk6kgploi20" path="res://sounds/light-switch.mp3" id="10_vv02w"]
 [ext_resource type="Texture2D" uid="uid://2738asorcyox" path="res://assets/Models/Phone/10109_Cordless Phone_v1_Diffuse.jpg" id="11_mpq2e"]
 [ext_resource type="ArrayMesh" uid="uid://ccmmhd1x34ffs" path="res://assets/Models/Phone/10109_Cordless Phone_v2_Iteration2.obj" id="12_3l5qr"]
+[ext_resource type="ArrayMesh" uid="uid://ds8ycrl7do2go" path="res://assets/Models/locker/Case/M.C.C.obj" id="13_qe2yv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_d43wc"]
 sky_top_color = Color(0.333333, 0.470588, 0.541176, 1)
@@ -1933,11 +1934,14 @@ shadow_mesh = SubResource("ArrayMesh_3vgw4")
 [sub_resource type="BoxShape3D" id="BoxShape3D_p5yrc"]
 size = Vector3(1.79871, 1.9225, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_scgs7"]
+size = Vector3(1.46785, 4.37308, 1.21185)
+
 [node name="office" type="Node3D"]
 script = ExtResource("1_2stet")
 
 [node name="player" parent="." instance=ExtResource("2_mwj6y")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5.78429, 0.535828, 19.3629)
+transform = Transform3D(-0.459284, 0, 1.94655, 0, 2, 0, -1.94655, 0, -0.459284, 11.3683, 0.535828, 2.94468)
 
 [node name="UI" parent="." instance=ExtResource("3_ovkr7")]
 
@@ -2587,7 +2591,7 @@ shadow_enabled = true
 shadow_bias = 0.671
 shadow_normal_bias = 0.81
 shadow_blur = 1.2
-omni_range = 7.031
+omni_range = 9.91397
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="env/lights/small_storage_1"]
 transform = Transform3D(0.5, 0, 0, 0, 0.00307799, -0.149997, 0, 0.49399, 0.000934612, 0, 0.231809, 0)
@@ -3939,19 +3943,19 @@ visible = false
 stream = ExtResource("10_vv02w")
 volume_db = -25.0
 
-[node name="Phone" type="StaticBody3D" parent="interacts"]
+[node name="phone" type="StaticBody3D" parent="interacts"]
 transform = Transform3D(-0.331519, 0, 0.943449, 0, 1, 0, -0.943449, 0, -0.331519, -30.6121, 2.05693, 1.62828)
 script = ExtResource("6_lopwn")
 prompt_message = "Phone"
 object_hierachy = "event"
 
-[node name="model" type="MeshInstance3D" parent="interacts/Phone"]
+[node name="model" type="MeshInstance3D" parent="interacts/phone"]
 transform = Transform3D(-0.00209682, -0.0192578, -0.00497395, 7.55208e-10, -0.00500152, 0.0193645, -0.0198898, 0.00203019, 0.000524364, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_6s7r8")
 mesh = ExtResource("12_3l5qr")
 skeleton = NodePath("../../../assets/working/working_desk_3")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/Phone"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/phone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.147104, 0.162334, 0.0108376)
 shape = SubResource("BoxShape3D_ky8a6")
 
@@ -3969,6 +3973,99 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/PC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.399353, -0.760932, 1.73401)
 shape = SubResource("BoxShape3D_p5yrc")
+
+[node name="lockers" type="Node3D" parent="interacts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.8086, 1.29617, 5.62764)
+
+[node name="locker_1" type="StaticBody3D" parent="interacts/lockers"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.933858, 0, -2.77506)
+script = ExtResource("6_lopwn")
+prompt_message = "Hide"
+object_hierachy = "hideout"
+
+[node name="MeshShape3D" type="MeshInstance3D" parent="interacts/lockers/locker_1"]
+transform = Transform3D(-3.68563, 0, -2.95236e-07, 0, 2.74049, 0, 3.22208e-07, 0, -3.3771, -0.0907965, 1.36316, 0.470094)
+mesh = ExtResource("13_qe2yv")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/lockers/locker_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
+shape = SubResource("BoxShape3D_scgs7")
+
+[node name="locker_2" type="StaticBody3D" parent="interacts/lockers"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.934, 0, -1.325)
+script = ExtResource("6_lopwn")
+prompt_message = "Hide"
+object_hierachy = "hideout"
+
+[node name="MeshShape3D" type="MeshInstance3D" parent="interacts/lockers/locker_2"]
+transform = Transform3D(-3.68563, 0, -2.95236e-07, 0, 2.74049, 0, 3.22208e-07, 0, -3.3771, -0.0907965, 1.36316, 0.470094)
+mesh = ExtResource("13_qe2yv")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/lockers/locker_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
+shape = SubResource("BoxShape3D_scgs7")
+
+[node name="locker_3" type="StaticBody3D" parent="interacts/lockers"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.933858, 0, 0.154996)
+script = ExtResource("6_lopwn")
+prompt_message = "Hide"
+object_hierachy = "hideout"
+
+[node name="MeshShape3D" type="MeshInstance3D" parent="interacts/lockers/locker_3"]
+transform = Transform3D(-3.68563, 0, -2.95236e-07, 0, 2.74049, 0, 3.22208e-07, 0, -3.3771, -0.0907965, 1.36316, 0.470094)
+mesh = ExtResource("13_qe2yv")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/lockers/locker_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
+shape = SubResource("BoxShape3D_scgs7")
+
+[node name="locker_4" type="StaticBody3D" parent="interacts/lockers"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.933858, 0, 1.6283)
+script = ExtResource("6_lopwn")
+prompt_message = "Hide"
+object_hierachy = "hideout"
+
+[node name="MeshShape3D" type="MeshInstance3D" parent="interacts/lockers/locker_4"]
+transform = Transform3D(-3.68563, 0, -2.95236e-07, 0, 2.74049, 0, 3.22208e-07, 0, -3.3771, -0.0907965, 1.36316, 0.470094)
+mesh = ExtResource("13_qe2yv")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/lockers/locker_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
+shape = SubResource("BoxShape3D_scgs7")
+
+[node name="locker_5" type="StaticBody3D" parent="interacts/lockers"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.933858, 0, 3.09875)
+script = ExtResource("6_lopwn")
+prompt_message = "Hide"
+object_hierachy = "hideout"
+
+[node name="MeshShape3D" type="MeshInstance3D" parent="interacts/lockers/locker_5"]
+transform = Transform3D(-3.68563, 0, -2.95236e-07, 0, 2.74049, 0, 3.22208e-07, 0, -3.3771, -0.0907965, 1.36316, 0.470094)
+mesh = ExtResource("13_qe2yv")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/lockers/locker_5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
+shape = SubResource("BoxShape3D_scgs7")
+
+[node name="locker_6" type="StaticBody3D" parent="interacts/lockers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.13178, 0, -26.2605)
+script = ExtResource("6_lopwn")
+prompt_message = "Hide"
+object_hierachy = "hideout"
+
+[node name="MeshShape3D" type="MeshInstance3D" parent="interacts/lockers/locker_6"]
+transform = Transform3D(-3.68563, 0, -2.95236e-07, 0, 2.74049, 0, 3.22208e-07, 0, -3.3771, -0.0907965, 1.36316, 0.470094)
+mesh = ExtResource("13_qe2yv")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/lockers/locker_6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
+shape = SubResource("BoxShape3D_scgs7")
 
 [connection signal="interacted" from="assets/working/working_desk_1/chair" to="player" method="_on_chair_interacted"]
 [connection signal="interacted" from="assets/working/working_desk_2/chair" to="player" method="_on_chair_interacted"]
@@ -4007,3 +4104,9 @@ shape = SubResource("BoxShape3D_p5yrc")
 [connection signal="interacted" from="interacts/light_switches/working_1" to="." method="_on_lights_interacted"]
 [connection signal="interacted" from="interacts/light_switches/WC_M_1" to="." method="_on_lights_interacted"]
 [connection signal="interacted" from="interacts/light_switches/WC_F_1" to="." method="_on_lights_interacted"]
+[connection signal="interacted" from="interacts/lockers/locker_1" to="player" method="_on_locker_interacted"]
+[connection signal="interacted" from="interacts/lockers/locker_2" to="player" method="_on_locker_interacted"]
+[connection signal="interacted" from="interacts/lockers/locker_3" to="player" method="_on_locker_interacted"]
+[connection signal="interacted" from="interacts/lockers/locker_4" to="player" method="_on_locker_interacted"]
+[connection signal="interacted" from="interacts/lockers/locker_5" to="player" method="_on_locker_interacted"]
+[connection signal="interacted" from="interacts/lockers/locker_6" to="player" method="_on_locker_interacted"]

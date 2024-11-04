@@ -1,6 +1,6 @@
 [gd_scene load_steps=198 format=4 uid="uid://dk6y0wglmsdsy"]
 
-[ext_resource type="Script" path="res://script/level.gd" id="1_ojqpp"]
+[ext_resource type="Script" path="res://script/office.gd" id="1_ojqpp"]
 [ext_resource type="Material" uid="uid://kfqlnmaxcvy1" path="res://materials/wall.tres" id="3_egeub"]
 [ext_resource type="Texture2D" uid="uid://b0m31e5jj4gj1" path="res://textures/Leather.jpg" id="4_vf0fv"]
 [ext_resource type="Script" path="res://script/interactable.gd" id="5_5m5qq"]
@@ -2805,7 +2805,7 @@ skeleton = NodePath("../OmniLight3D")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="env"]
 stream = ExtResource("5_e8e22")
-volume_db = -20.0
+volume_db = -5.0
 autoplay = true
 parameters/looping = true
 
@@ -3545,7 +3545,7 @@ libraries = {
 [node name="button" type="StaticBody3D" parent="interacts/doors/lift"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5354, 0, 0)
 script = ExtResource("5_5m5qq")
-prompt_message = "Call"
+prompt_message = "Open"
 object_status = "close"
 object_hierachy = "lift"
 

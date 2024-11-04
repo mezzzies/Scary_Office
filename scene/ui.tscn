@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cctfcy2bwdnkh"]
+[gd_scene load_steps=4 format=3 uid="uid://cctfcy2bwdnkh"]
 
+[ext_resource type="Script" path="res://script/pause_menu.gd" id="1_esmet"]
 [ext_resource type="Texture2D" uid="uid://2aefex8nj45u" path="res://materials/aim.png" id="1_h5rh5"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_w22qa"]
@@ -11,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_esmet")
 
 [node name="crosshair" type="TextureRect" parent="."]
 layout_mode = 1
@@ -30,12 +32,44 @@ texture = ExtResource("1_h5rh5")
 expand_mode = 1
 
 [node name="stamina_gauge" type="HSlider" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 351.0
-offset_top = 571.0
-offset_right = 836.0
-offset_bottom = 609.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = 360.0
+offset_right = 300.0
+offset_bottom = 398.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_icons/grabber = SubResource("ImageTexture_w22qa")
 step = 0.0
 value = 100.0
+
+[node name="pause_menu" type="VBoxContainer" parent="."]
+visible = false
+offset_left = 37.0
+offset_top = 28.0
+offset_right = 107.0
+offset_bottom = 129.0
+
+[node name="resume" type="Button" parent="pause_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Resume"
+
+[node name="option" type="Button" parent="pause_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Options"
+
+[node name="exit" type="Button" parent="pause_menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Exit to Main Menu"
+
+[connection signal="pressed" from="pause_menu/resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="pause_menu/option" to="." method="_on_option_pressed"]
+[connection signal="pressed" from="pause_menu/exit" to="." method="_on_exit_pressed"]

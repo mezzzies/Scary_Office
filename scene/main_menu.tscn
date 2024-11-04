@@ -17,11 +17,8 @@ fov = 78.9144
 layout_mode = 3
 anchors_preset = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="UI"]
-offset_right = 40.0
-offset_bottom = 40.0
-
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 0
 offset_left = 37.0
 offset_top = 28.0
 offset_right = 107.0

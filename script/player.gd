@@ -28,8 +28,12 @@ var interacted_obj_rotation_deg: Vector3
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
+	Input.mouse_mode =Input.MOUSE_MODE_CAPTURED
+	GlobalVar.pause_status = false
 	speed = WALK_SPEED
 	stamina_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
+	print("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
+	print(stamina_gauge)
 	$male_casual/AnimationTree.set("parameters/MAIN/blend_position",Vector2(0,0))
 	last_player_position = global_position
 	player_state = PLAYER_STATE.IDLE
@@ -45,7 +49,7 @@ func _ready():
 func _input(event: InputEvent) -> void:
 	var min_deg
 	var max_deg
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and !GlobalVar.pause_status:
 		if player_state == PLAYER_STATE.SITTING:
 			$".".rotate_y(-event.relative.x * 0.005)
 			$Head.rotate_x(-event.relative.y * 0.005)
@@ -57,6 +61,14 @@ func _input(event: InputEvent) -> void:
 			$".".rotate_y(-event.relative.x * 0.005)
 			$Head.rotate_x(-event.relative.y * 0.005)
 			$Head.rotation.x = clamp($Head.rotation.x, deg_to_rad(-90),deg_to_rad(90))
+	else:
+		pass
+	
+	if GlobalVar.pause_status:
+		Input.mouse_mode =Input.MOUSE_MODE_VISIBLE
+	else:
+		Input.mouse_mode =Input.MOUSE_MODE_CAPTURED
+		
 
 func _process(delta):
 	# Stamina Show
@@ -82,6 +94,7 @@ func _process(delta):
 			$Head/flashlight.visible = true
 		else:
 			$Head/flashlight.visible = false
+		
 
 func _physics_process(delta):
 	# Add the gravity.

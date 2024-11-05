@@ -6,6 +6,9 @@ var time_accumulator = 0.0  # Accumulates delta each frame
 var seconds_count = 0
 var minutes_count = 0
 var hours_count = 0
+var second_flag = false
+var minute_flag = false
+var hour_flag = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,6 +25,7 @@ func delta_to_second(delta_1):
 		seconds_count += 1  # Increment the integer timer
 		# Subtract 1 second from the accumulator (or reset to 0 for exact intervals)
 		time_accumulator -= 1.0
+		second_flag = true
 	if seconds_count >= 60:
 		seconds_count = 0
 		minutes_count += 1

@@ -14,14 +14,15 @@ func _process(delta: float) -> void:
 		GlobalVar.pause_status = !GlobalVar.pause_status
 
 func pause_game():
-	if pause_flag:
-		pause_menu.visible = false
-		Engine.time_scale = 1
-	else:
+	pause_flag = !pause_flag
+	if pause_flag == true:
 		pause_menu.visible = true
 		Engine.time_scale = 0
-		
-	pause_flag = !pause_flag
+		$crosshair.visible = false
+	else:
+		pause_menu.visible = false
+		Engine.time_scale = 1
+		$crosshair.visible = true
 
 func _on_resume_pressed() -> void:
 	pause_game()

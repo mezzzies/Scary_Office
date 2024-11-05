@@ -1,5 +1,14 @@
 extends CharacterBody3D
 
+# WORKING
+const WORK_PROGRESS_SHOW_TIME = 5
+const EASY_WORK = 1.0
+const MED_WORK = 5.0
+const HARD_WORK = 10.0
+const WTH_WORK = 20.0
+const FATIGUE_DRAIN_VAL = 2
+
+# MOVEMENT
 const JUMP_VELOCITY = 4.5
 const WALK_SPEED = 3.0
 const SPRINT_SPEED = 7.0
@@ -16,25 +25,44 @@ enum PLAYER_STATE {
 }
 
 @onready var footstep_audio : AudioStreamPlayer3D = get_node(NodePath("AudioStreamPlayer3D"))
+@onready var stamina_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
+@onready var work_progress_node = get_node("/root/" + get_tree().current_scene.name + "/UI/work_progress")
+@onready var work_progress_label = get_node("/root/" + get_tree().current_scene.name + "/UI/work_progress/label")
+@onready var fatigue_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/fatigue_gauge")
+# Time variable
+var time_accumulator = 0.0  # Accumulates delta each frame
+var seconds_count = 0
+var minutes_count = 0
+var hours_count = 0
+var second_flag = false
+var minute_flag = false
+var hour_flag = false
 
+# movement
 var speed
-var stamina_gauge
 var moving_flag: bool = false
 var walking_sound_flag: bool = false
+# Get the gravity from the project settings to be synced with RigidBody nodes.
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+# player state and position
 var cur_player_state
 var pre_player_state
-
 var last_player_position: Vector3
 var interacted_obj_rotation_deg: Vector3
 
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+# working / mission
+var work_progress = 0.0
+var work_complete = 0.0
+var work_update_flag = false
+var work_time_count = 0
+var work_difficulty = 0
+
 
 func _ready():
 	Input.mouse_mode =Input.MOUSE_MODE_CAPTURED
 	GlobalVar.pause_status = false
 	speed = WALK_SPEED
-	stamina_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
 	$male_casual/AnimationTree.set("parameters/MAIN/blend_position",Vector2(0,0))
 	last_player_position = global_position
 	cur_player_state = PLAYER_STATE.IDLE
@@ -76,13 +104,15 @@ func _input(event: InputEvent) -> void:
 		
 
 func _process(delta):
+	delta_to_second(delta)
+	
 	# Stamina Show
 	if stamina_gauge.value < (stamina_gauge.max_value):
 		stamina_gauge.visible = true
 	else:
 		stamina_gauge.visible = false
-	
-	# Handle Sprint.
+
+	# Handle Stamina.
 	if speed == SPRINT_SPEED and stamina_gauge.value > (stamina_gauge.min_value + 10):
 		stamina_gauge.value = stamina_gauge.value - SPRINT_STAMINA_DRAIN_VAL * delta
 	elif speed == WALK_SPEED and stamina_gauge.value < stamina_gauge.max_value:
@@ -93,13 +123,53 @@ func _process(delta):
 		speed = WALK_SPEED
 	else:
 		pass
+
+	# Work Progress
+	if work_update_flag:
+		fatugue_drain()
+		work_update_flag = false
+		work_progress_node.visible = true
+		work_progress_label.text = "PROGRESS " + \
+		str(GlobalVar.round_to_dec(work_complete,2)) + "%"
+		work_time_count = 0
+	elif work_progress_node.visible == true and work_time_count > WORK_PROGRESS_SHOW_TIME:
+		work_progress_node.visible = false
+	else:
+		pass
 		
 	if Input.is_action_just_pressed("flashlight"):
 		if $Head/flashlight.visible == false:
 			$Head/flashlight.visible = true
 		else:
 			$Head/flashlight.visible = false
-	
+
+	if second_flag:
+		second_flag = false
+		if work_progress_node.visible: # work progress showing countdown
+			work_time_count += 1
+
+func fatugue_drain() -> void:
+	# Handle Fatigue.
+	if work_update_flag and fatigue_gauge.value > (fatigue_gauge.min_value + 5):
+		print(work_progress)
+		fatigue_gauge.value = fatigue_gauge.value - (work_progress * work_difficulty * FATIGUE_DRAIN_VAL)
+		print("fatigue_gauge.value ",fatigue_gauge.value)
+	else:
+		pass
+
+func delta_to_second(delta_1):
+	time_accumulator += delta_1
+	# When the accumulator reaches or exceeds 1 second
+	if time_accumulator >= 1.0:
+		seconds_count += 1  # Increment the integer timer
+		# Subtract 1 second from the accumulator (or reset to 0 for exact intervals)
+		time_accumulator -= 1.0
+		second_flag = true
+	if seconds_count >= 60:
+		seconds_count = 0
+		minutes_count += 1
+	if minutes_count >= 60:
+		hours_count += 1
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -118,28 +188,23 @@ func _physics_process(delta):
 	
 	if input_dir.x == 0 and input_dir.y == 0:
 		footstep_audio.stop()
-	
+		
+	if Input.is_action_just_pressed("sprint") and is_on_floor() and \
+	stamina_gauge.value > (stamina_gauge.min_value + 30):
+		speed = SPRINT_SPEED
+	elif Input.is_action_just_released("sprint") and is_on_floor():
+		speed = WALK_SPEED
+	else:
+		pass
+
 	if direction:
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
-		if Input.is_action_just_pressed("sprint") and \
-		is_on_floor() and \
-		stamina_gauge.value > (stamina_gauge.min_value + 30):
-			speed = SPRINT_SPEED
-		elif Input.is_action_just_released("sprint") and is_on_floor():
-			speed = WALK_SPEED
-		else:
-			pass
 		moving_flag = true
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
 		velocity.z = move_toward(velocity.z, 0, speed)
 		moving_flag = false
-	
-	if pre_player_state == PLAYER_STATE.SITTING or \
-	pre_player_state == PLAYER_STATE.HIDING:
-		$male_casual/AnimationPlayer.stop()
-		global_position = last_player_position
 		
 	# Smoothly transition the animation blend position
 	var current_blend = $male_casual/AnimationTree.get("parameters/MAIN/blend_position")
@@ -165,6 +230,11 @@ func _physics_process(delta):
 	var new_blend = current_blend.lerp(target_blend, 5.0 * delta)
 	$male_casual/AnimationTree.set("parameters/MAIN/blend_position", new_blend)
 	
+	if pre_player_state == PLAYER_STATE.SITTING or \
+	pre_player_state == PLAYER_STATE.HIDING:
+		$male_casual/AnimationPlayer.stop()
+		global_position = last_player_position
+		
 	if pre_player_state != cur_player_state:
 		set_collision_player(cur_player_state)
 	move_and_slide()
@@ -219,3 +289,9 @@ func _on_locker_interacted(body: Variant) -> void:
 		global_position.z = locker_position.z
 		global_rotation_degrees = interacted_obj_rotation_deg
 		$Head.rotation.x = 0
+
+func _on_pc_interacted(body: Variant) -> void:
+	work_difficulty = WTH_WORK
+	work_progress = (randf_range(0.1, 2)/work_difficulty)
+	work_complete += work_progress
+	work_update_flag = true

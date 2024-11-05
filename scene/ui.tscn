@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://script/pause_menu.gd" id="1_esmet"]
 [ext_resource type="Texture2D" uid="uid://2aefex8nj45u" path="res://materials/aim.png" id="1_h5rh5"]
 
-[sub_resource type="ImageTexture" id="ImageTexture_w22qa"]
+[sub_resource type="ImageTexture" id="ImageTexture_eic4x"]
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -13,6 +13,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_esmet")
+
+[node name="work_progress" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 54.0
+offset_bottom = 77.0
+grow_horizontal = 2
+
+[node name="label" type="Label" parent="work_progress"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 42
+text = "PROGRESS 0%"
 
 [node name="crosshair" type="TextureRect" parent="."]
 layout_mode = 1
@@ -44,9 +62,31 @@ offset_right = 300.0
 offset_bottom = 398.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_icons/grabber = SubResource("ImageTexture_w22qa")
+theme_override_icons/grabber_disabled = SubResource("ImageTexture_eic4x")
 step = 0.0
 value = 100.0
+editable = false
+
+[node name="fatigue_gauge" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -936.0
+offset_top = 245.0
+offset_right = -336.0
+offset_bottom = 283.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -1.5708
+scale = Vector2(1.042, 3)
+theme_override_icons/grabber_disabled = SubResource("ImageTexture_eic4x")
+max_value = 1000.0
+step = 0.0
+value = 1000.0
+editable = false
 
 [node name="pause_menu" type="VBoxContainer" parent="."]
 visible = false

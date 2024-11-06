@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dklbashrnrqka"]
+[gd_scene load_steps=30 format=3 uid="uid://dklbashrnrqka"]
 
 [ext_resource type="Script" path="res://script/player.gd" id="1_itioc"]
 [ext_resource type="PackedScene" uid="uid://dmi067g8c7jry" path="res://scene/interactions.tscn" id="3_2wgjv"]
@@ -11,6 +11,33 @@
 [ext_resource type="Animation" uid="uid://cfecbsvxl1jr4" path="res://animations/walk_back.anim" id="10_7khai"]
 [ext_resource type="Animation" uid="uid://e3unlsb11an4" path="res://animations/walk_left.anim" id="11_cpdwd"]
 [ext_resource type="Animation" uid="uid://vn2q5shk38vg" path="res://animations/walk_right.anim" id="12_ubn42"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3g4r2"]
+animation = &"crouch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tiudh"]
+animation = &"walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4li1s"]
+animation = &"walk_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ubt8d"]
+animation = &"walk_back"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bug2n"]
+animation = &"walk_left"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_0amlj"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_3g4r2")
+blend_point_0/pos = Vector2(0, 0)
+blend_point_1/node = SubResource("AnimationNodeAnimation_tiudh")
+blend_point_1/pos = Vector2(0, 1)
+blend_point_2/node = SubResource("AnimationNodeAnimation_4li1s")
+blend_point_2/pos = Vector2(1, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_ubt8d")
+blend_point_3/pos = Vector2(0, -1)
+blend_point_4/node = SubResource("AnimationNodeAnimation_bug2n")
+blend_point_4/pos = Vector2(-1, 0)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vge7k"]
 animation = &"idle"
@@ -45,12 +72,20 @@ sync = true
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0tww3"]
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jgeo0"]
+advance_condition = &"crouch"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_otsws"]
+advance_condition = &"stand"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_nm3yl"]
+states/CROUCH/node = SubResource("AnimationNodeBlendSpace2D_0amlj")
+states/CROUCH/position = Vector2(462, 68)
 states/End/position = Vector2(700, 172)
 states/MAIN/node = SubResource("AnimationNodeBlendSpace2D_epbkw")
 states/MAIN/position = Vector2(462, 172)
 states/Start/position = Vector2(228, 172)
-transitions = ["Start", "MAIN", SubResource("AnimationNodeStateMachineTransition_0tww3")]
+transitions = ["Start", "MAIN", SubResource("AnimationNodeStateMachineTransition_0tww3"), "MAIN", "CROUCH", SubResource("AnimationNodeStateMachineTransition_jgeo0"), "CROUCH", "MAIN", SubResource("AnimationNodeStateMachineTransition_otsws")]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2f0pu"]
 _data = {
@@ -95,13 +130,20 @@ spot_range = 15.0
 spot_angle = 37.1
 spot_angle_attenuation = 0.784586
 
+[node name="mouth_sound" type="AudioStreamPlayer3D" parent="Head"]
+volume_db = -10.0
+pitch_scale = 2.0
+
 [node name="male_casual" parent="." instance=ExtResource("3_d6hyt")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="AnimationTree" type="AnimationTree" parent="male_casual"]
 tree_root = SubResource("AnimationNodeStateMachine_nm3yl")
 anim_player = NodePath("../AnimationPlayer")
-parameters/MAIN/blend_position = Vector2(0.00190842, -0.0131004)
+parameters/conditions/crouch = false
+parameters/conditions/stand = false
+parameters/CROUCH/blend_position = Vector2(0.001894, -0.0088495)
+parameters/MAIN/blend_position = Vector2(-0.00189394, -0.0176991)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="male_casual"]
 reset_on_save = false
@@ -113,5 +155,5 @@ libraries = {
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87352, 0)
 shape = SubResource("CapsuleShape3D_cxxsu")
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+[node name="foot_step_audio" type="AudioStreamPlayer3D" parent="."]
 volume_db = -15.0

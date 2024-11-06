@@ -1,4 +1,4 @@
-[gd_scene load_steps=202 format=4 uid="uid://bfobpbpbi5j3m"]
+[gd_scene load_steps=205 format=4 uid="uid://bfobpbpbi5j3m"]
 
 [ext_resource type="Script" path="res://script/office.gd" id="1_2stet"]
 [ext_resource type="PackedScene" uid="uid://dklbashrnrqka" path="res://scene/player.tscn" id="2_mwj6y"]
@@ -12,6 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://4lk6kgploi20" path="res://sounds/light-switch.mp3" id="10_vv02w"]
 [ext_resource type="Texture2D" uid="uid://2738asorcyox" path="res://assets/Models/Phone/10109_Cordless Phone_v1_Diffuse.jpg" id="11_mpq2e"]
 [ext_resource type="ArrayMesh" uid="uid://ccmmhd1x34ffs" path="res://assets/Models/Phone/10109_Cordless Phone_v2_Iteration2.obj" id="12_3l5qr"]
+[ext_resource type="AudioStream" uid="uid://bllpqr5qlwq3j" path="res://sounds/keyboard-typing.mp3" id="13_padry"]
 [ext_resource type="ArrayMesh" uid="uid://ds8ycrl7do2go" path="res://assets/Models/locker/Case/M.C.C.obj" id="13_qe2yv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_d43wc"]
@@ -1937,11 +1938,16 @@ size = Vector3(1.85098, 1.37287, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_scgs7"]
 size = Vector3(1.46785, 4.37308, 1.21185)
 
+[sub_resource type="BoxMesh" id="BoxMesh_s0f3u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dvqs6"]
+size = Vector3(1, 0.174316, 1)
+
 [node name="office" type="Node3D"]
 script = ExtResource("1_2stet")
 
 [node name="player" parent="." instance=ExtResource("2_mwj6y")]
-transform = Transform3D(-0.0738108, 0, -1.99864, 0, 2, 0, 1.99864, 0, -0.0738108, -34.6766, 0.535828, 0.781165)
+transform = Transform3D(-0.0738108, 0, -1.99864, 0, 2, 0, 1.99864, 0, -0.0738108, 5.8694, 0.535828, -4.45992)
 
 [node name="UI" parent="." instance=ExtResource("3_ovkr7")]
 
@@ -3974,6 +3980,11 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 1.82077e-14, 5.82645e-13, 1, 0.425489, -0.486118, 1.73401)
 shape = SubResource("BoxShape3D_p5yrc")
 
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="interacts/PC"]
+stream = ExtResource("13_padry")
+volume_db = -10.0
+parameters/looping = false
+
 [node name="lockers" type="Node3D" parent="interacts"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.8086, 1.29617, 5.62764)
 
@@ -4067,6 +4078,18 @@ skeleton = NodePath("../../../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0949564, 1.43953, 0.446136)
 shape = SubResource("BoxShape3D_scgs7")
 
+[node name="food" type="StaticBody3D" parent="interacts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7304, 3.21004, -5.18763)
+script = ExtResource("6_lopwn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="interacts/food"]
+transform = Transform3D(1, 0, 0, 0, 0.16925, 0, 0, 0, 1, 0, -0.414062, 0)
+mesh = SubResource("BoxMesh_s0f3u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interacts/food"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.412842, 0)
+shape = SubResource("BoxShape3D_dvqs6")
+
 [connection signal="interacted" from="assets/working/working_desk_1/chair" to="player" method="_on_chair_interacted"]
 [connection signal="interacted" from="assets/working/working_desk_2/chair" to="player" method="_on_chair_interacted"]
 [connection signal="interacted" from="assets/working/working_desk_3/chair" to="player" method="_on_chair_interacted"]
@@ -4111,3 +4134,4 @@ shape = SubResource("BoxShape3D_scgs7")
 [connection signal="interacted" from="interacts/lockers/locker_4" to="player" method="_on_locker_interacted"]
 [connection signal="interacted" from="interacts/lockers/locker_5" to="player" method="_on_locker_interacted"]
 [connection signal="interacted" from="interacts/lockers/locker_6" to="player" method="_on_locker_interacted"]
+[connection signal="interacted" from="interacts/food" to="player" method="_on_food_interacted"]

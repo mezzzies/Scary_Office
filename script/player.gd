@@ -16,6 +16,18 @@ const SPRINT_STAMINA_DRAIN_VAL = 25
 #const JUMP_STAMINA_DRAIN_VAL = 20
 const STAMINA_RECOVERY_VAL = 20
 
+# PLAYER STATUS - what is player feeling
+enum PLAYER_STATUS {
+	NORMAL,
+	HUNGRY,
+	FULL,
+	DIZZY,
+	SLEEPY,
+	EXHAUSTED,
+	SCARED
+}
+
+# PLAYER STATE - what is player doing
 enum PLAYER_STATE {
 	IDLE,
 	SITTING,
@@ -24,11 +36,13 @@ enum PLAYER_STATE {
 	HIDING
 }
 
-@onready var footstep_audio : AudioStreamPlayer3D = get_node(NodePath("AudioStreamPlayer3D"))
+@onready var foot_step_sound = $foot_step_audio
+@onready var mouth_sound = $Head/mouth_sound
 @onready var stamina_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/stamina_gauge")
 @onready var work_progress_node = get_node("/root/" + get_tree().current_scene.name + "/UI/work_progress")
 @onready var work_progress_label = get_node("/root/" + get_tree().current_scene.name + "/UI/work_progress/label")
 @onready var fatigue_gauge = get_node("/root/" + get_tree().current_scene.name + "/UI/fatigue_gauge")
+@onready var pc_interact_sound = get_node("/root/" + get_tree().current_scene.name + "/interacts/PC/AudioStreamPlayer3D")
 # Time variable
 var time_accumulator = 0.0  # Accumulates delta each frame
 var seconds_count = 0
@@ -58,6 +72,8 @@ var work_update_flag = false
 var work_time_count = 0
 var work_difficulty = 0
 
+# player status
+var player_status : Array = [0,0,0]
 
 func _ready():
 	Input.mouse_mode =Input.MOUSE_MODE_CAPTURED
@@ -126,11 +142,15 @@ func _process(delta):
 
 	# Work Progress
 	if work_update_flag:
-		fatugue_drain()
 		work_update_flag = false
 		work_progress_node.visible = true
-		work_progress_label.text = "PROGRESS " + \
-		str(GlobalVar.round_to_dec(work_complete,2)) + "%"
+		if work_complete >= 100:
+			work_complete = 100
+			work_progress_label.text = "PROGRESS " + \
+			str(GlobalVar.round_to_dec(work_complete,2)) + "% (DONE)"
+		else:
+			work_progress_label.text = "PROGRESS " + \
+			str(GlobalVar.round_to_dec(work_complete,2)) + "%"
 		work_time_count = 0
 	elif work_progress_node.visible == true and work_time_count > WORK_PROGRESS_SHOW_TIME:
 		work_progress_node.visible = false
@@ -148,29 +168,6 @@ func _process(delta):
 		if work_progress_node.visible: # work progress showing countdown
 			work_time_count += 1
 
-func fatugue_drain() -> void:
-	# Handle Fatigue.
-	if work_update_flag and fatigue_gauge.value > (fatigue_gauge.min_value + 5):
-		print(work_progress)
-		fatigue_gauge.value = fatigue_gauge.value - (work_progress * work_difficulty * FATIGUE_DRAIN_VAL)
-		print("fatigue_gauge.value ",fatigue_gauge.value)
-	else:
-		pass
-
-func delta_to_second(delta_1):
-	time_accumulator += delta_1
-	# When the accumulator reaches or exceeds 1 second
-	if time_accumulator >= 1.0:
-		seconds_count += 1  # Increment the integer timer
-		# Subtract 1 second from the accumulator (or reset to 0 for exact intervals)
-		time_accumulator -= 1.0
-		second_flag = true
-	if seconds_count >= 60:
-		seconds_count = 0
-		minutes_count += 1
-	if minutes_count >= 60:
-		hours_count += 1
-
 func _physics_process(delta):
 	# Add the gravity.
 	if not is_on_floor():
@@ -186,8 +183,8 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("left", "right", "forward", "backward")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	if input_dir.x == 0 and input_dir.y == 0:
-		footstep_audio.stop()
+	#if input_dir.x == 0 and input_dir.y == 0:
+		#foot_step_sound.stop()
 		
 	if Input.is_action_just_pressed("sprint") and is_on_floor() and \
 	stamina_gauge.value > (stamina_gauge.min_value + 30):
@@ -240,17 +237,13 @@ func _physics_process(delta):
 	move_and_slide()
 	get_last_slide_collision()
 
-func _play_footstep_audio():
-	var sec
-	
+func play_foot_step_sound():
 	if  moving_flag == true:
 		if speed == WALK_SPEED:
-			footstep_audio.stream = load("res://sounds/footsteps_2.mp3")
+			foot_step_sound.stream = load("res://sounds/footsteps_2.mp3")
 		elif speed == SPRINT_SPEED:
-			footstep_audio.stream = load("res://sounds/footsteps_2_running.mp3")
-		footstep_audio.play()
-	else:
-		footstep_audio.stop()
+			foot_step_sound.stream = load("res://sounds/footsteps_2_running.mp3")
+		foot_step_sound.play()
 
 func set_collision_player(state: int):
 	match state:
@@ -259,7 +252,36 @@ func set_collision_player(state: int):
 				$".".set_collision_mask_value(i,true)
 		PLAYER_STATE.SITTING, PLAYER_STATE.HIDING:
 			$".".set_collision_mask_value(1,false)
-			
+
+func fatigue_drain() -> void:
+	# Drain Fatigue.
+	if work_update_flag and fatigue_gauge.value > (fatigue_gauge.min_value + 5):
+		fatigue_gauge.value = fatigue_gauge.value - (work_progress * work_difficulty * FATIGUE_DRAIN_VAL)
+	else:
+		pass
+		
+func fatigue_recovery() -> void:
+	# Recover Fatigue.
+	if fatigue_gauge.value < 1000:
+		fatigue_gauge.value += 200
+		if fatigue_gauge.value >= 1000:
+			fatigue_gauge.value = 1000
+	else:
+		pass
+
+func delta_to_second(delta_1):
+	time_accumulator += delta_1
+	# When the accumulator reaches or exceeds 1 second
+	if time_accumulator >= 1.0:
+		seconds_count += 1  # Increment the integer timer
+		# Subtract 1 second from the accumulator (or reset to 0 for exact intervals)
+		time_accumulator -= 1.0
+		second_flag = true
+	if seconds_count >= 60:
+		seconds_count = 0
+		minutes_count += 1
+	if minutes_count >= 60:
+		hours_count += 1
 
 func _on_chair_interacted(body: Variant) -> void:
 	var chair_node = get_node(GlobalVar.interactive_node_path)
@@ -291,7 +313,22 @@ func _on_locker_interacted(body: Variant) -> void:
 		$Head.rotation.x = 0
 
 func _on_pc_interacted(body: Variant) -> void:
-	work_difficulty = WTH_WORK
+	work_difficulty = EASY_WORK
 	work_progress = (randf_range(0.1, 2)/work_difficulty)
-	work_complete += work_progress
 	work_update_flag = true
+	if work_complete >= 100:
+		pass
+	else:
+		work_complete += work_progress
+		fatigue_drain()
+	if pc_interact_sound.playing == false and pc_interact_sound.stream_paused == false:
+		pc_interact_sound.play()
+	elif pc_interact_sound.stream_paused:
+		pc_interact_sound.stream_paused = false
+		
+func _on_food_interacted(body: Variant) -> void:
+	fatigue_recovery()
+	mouth_sound.stream = load("res://sounds/eating-sound-effect.mp3")
+	mouth_sound.volume_db = -40
+	mouth_sound.pitch_scale = 0.8
+	mouth_sound.play()

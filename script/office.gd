@@ -17,6 +17,10 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	delta_to_second(delta)
+	
+	if second_flag:
+		second_flag = false
+		$interacts/PC/AudioStreamPlayer3D.stream_paused = true
 		
 func delta_to_second(delta_1):
 	time_accumulator += delta_1

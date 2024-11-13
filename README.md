@@ -12,8 +12,10 @@
 
   ![](https://github.com/mezzzies/Scary_Office/blob/master/00_github/picture_ref/main_menu.png)
 
-  **Play** button goes to playable scene
-  **Option** button goes nowhere, since I did not create any link
+  **Play** button goes to playable scene.
+  
+  **Option** button goes nowhere, since I did not create any link.
+  
   **Quit** button for exit the game
   
 **2. Loading Scene**
@@ -56,6 +58,7 @@
 
 
 ![](https://user-images.githubusercontent.com/18350557/176309783-0785949b-9127-417c-8b55-ab5a4333674e.gif) Just check that I can create simple game or not.
+
 Seem like it is ... moving on to the new project and idea
 
 
